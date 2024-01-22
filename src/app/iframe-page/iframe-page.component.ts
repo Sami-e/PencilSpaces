@@ -9,6 +9,7 @@ import { MoveChange, NgxChessBoardComponent, NgxChessBoardModule } from "ngx-che
   styleUrl: './iframe-page.component.scss'
 })
 export class IFramePageComponent {
+
   
   @Input()
   player: string = "";
@@ -20,6 +21,10 @@ export class IFramePageComponent {
 
   getPlayerNumber() {
     return this.player == "white" ? 1 : 2;
+  }
+  
+  getPlayerColour() {
+    return this.player.charAt(0).toUpperCase() + this.player.slice(1);
   }
 
   orienteBoard() {
@@ -112,6 +117,7 @@ export class IFramePageComponent {
         const originPrefix = url.slice(0, url.lastIndexOf('/'))
         if (!event.origin.startsWith(originPrefix)) {
           // Invalid Origin
+          return;
         }
 
         const data = JSON.parse(event.data);

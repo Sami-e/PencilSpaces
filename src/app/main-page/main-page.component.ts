@@ -37,6 +37,7 @@ export class MainPageComponent {
       "message",
       (event : MessageEvent) => {
         const data = JSON.parse(event.data);
+        // If Statement in case future actions created for further requirements
         if (data.action == 'boardUpdating') {
           this.processBoardUpdating(event);
         }
