@@ -32,8 +32,10 @@ export class IFramePageComponent {
   }
 
   resetBoard() {
+    this.propogateGameState = false;
     this.currentPlayer = 'white'
     this.board.reset();
+    this.propogateGameState = true;
   }
 
   onGameEnd(winner: number) {
@@ -65,9 +67,11 @@ export class IFramePageComponent {
 
   moveCallback($event: MoveChange) {    
     if (this.currentPlayer == this.player && this.propogateGameState) {
+      this.propogateGameState = false;
       const message = {action: "boardUpdating", pgn: $event.pgn.pgn}
       const url = window.location.href
       const targetUrl = url.slice(0, url.lastIndexOf('/')).concat('/mainpage')
+      console.log(message)
       postMessage(JSON.stringify(message), targetUrl)
       if ($event.checkmate) {
         this.onCheckmate()
@@ -77,24 +81,17 @@ export class IFramePageComponent {
     }
   }
 
-  
-
   processMoveRecieved(data : {pgn: string}) {
     if (this.currentPlayer == this.player) {
       this.currentPlayer = this.currentPlayer == 'white' ? 'black' : 'white';
+      this.propogateGameState = true;
       return;
     }
 
     this.board.setPGN(data.pgn);
     this.orienteBoard();
     this.currentPlayer = this.player;
-
-    
-
-    const message = {action: 'completed'}
-    const url = window.location.href
-    const targetUrl = url.slice(0, url.lastIndexOf('/')).concat('/mainpage')
-    postMessage(JSON.stringify(message), targetUrl);
+    this.propogateGameState = true;
   }
 
   localSave(){
